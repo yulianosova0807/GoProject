@@ -6,6 +6,8 @@ import (
 	"net/http"
 )
 
+import _ "github.com/andlabs/ui/winmanifest"
+
 func main() {
 	http.HandleFunc("/", sayhello)           // Устанавливаем роутер
 	err := http.ListenAndServe(":8080", nil) // устанавливаем порт веб-сервера
