@@ -50,7 +50,6 @@ func Client() ui.Control {
 	grid.SetPadded(true)
 	vbox.Append(grid, false)
 
-	//поле ввода текста
 	group := ui.NewGroup("")
 	group.SetMargined(true)
 	vbox.Append(group, true)
@@ -61,13 +60,15 @@ func Client() ui.Control {
 	entryForm.SetPadded(true)
 	group.SetChild(entryForm)
 
-	entryForm.Append("Enter text", ui.NewEntry(), false)
+	//поле ввода текста
+	textBox := ui.NewEntry()
+	entryForm.Append("Enter text", textBox, false)
 
 	button := ui.NewButton("Connect")
 	entry := ui.NewEntry()
 	entry.SetReadOnly(true)
 	button.OnClicked(func(*ui.Button) {
-		ui.MsgBox(mainwin, sendMessage("Hello"), sendMessage("I am server!"))
+		ui.MsgBox(mainwin, "Client_Server", sendMessage(textBox.Text()))
 	})
 	grid.Append(button,
 		0, 0, 1, 1,
@@ -84,7 +85,7 @@ func Client() ui.Control {
 }
 
 func setupUI() {
-	mainwin = ui.NewWindow("Client_window", 300, 300, true)
+	mainwin = ui.NewWindow("", 300, 300, true)
 	mainwin.OnClosing(func(*ui.Window) bool {
 		ui.Quit()
 		return true
