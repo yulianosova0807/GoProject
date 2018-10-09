@@ -14,21 +14,21 @@ import (
 )
 
 func sendMessage(message string) string {
-	client := http.Client{}
-	resp, err := client.Get("http://localhost:8080/" + message)
+	client := http.Client{}                                     //будем получать информацию для клиента по http протоколу
+	resp, err := client.Get("http://localhost:8080/" + message) //метод Get - принимает адрес локалхост, и сообщение (если бы это делалось в браузере, так оно висит по умолчанию)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println(err) // обработка ошибок - по умолчанию всегда
 		return ""
 	}
 	defer resp.Body.Close()
-	if resp.StatusCode == http.StatusOK {
-		bodyBytes, err2 := ioutil.ReadAll(resp.Body)
+	if resp.StatusCode == http.StatusOK { // статусОк - для проверки, сработал ли GET()
+		bodyBytes, err2 := ioutil.ReadAll(resp.Body) //считываем пришедшие данные ( в данном случае, это будет сообщение в окне)
 		if err2 != nil {
-			fmt.Println(err)
+			fmt.Println(err) // обработка ошибок - по умолчанию всегда
 			return ""
 		}
-		bodyString := string(bodyBytes)
-		return bodyString
+		bodyString := string(bodyBytes) //преобразуем байты в строку
+		return bodyString               //возвражаем строку
 	}
 	return ""
 }
@@ -61,14 +61,14 @@ func Client() ui.Control {
 	group.SetChild(entryForm)
 
 	//поле ввода текста
-	textBox := ui.NewEntry()
+	textBox := ui.NewEntry() //создаем ссылку, чтобы потом можно было отсюда дергать текст
 	entryForm.Append("Enter text", textBox, false)
 
 	button := ui.NewButton("Connect")
 	entry := ui.NewEntry()
 	entry.SetReadOnly(true)
 	button.OnClicked(func(*ui.Button) {
-		ui.MsgBox(mainwin, "Client_Server", sendMessage(textBox.Text()))
+		ui.MsgBox(mainwin, "Client_Server", sendMessage(textBox.Text())) // вызываем в МВ функцию с принятым сообщением
 	})
 	grid.Append(button,
 		0, 0, 1, 1,
