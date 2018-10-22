@@ -5,9 +5,13 @@
 package main
 
 import (
+	"crypto/rand"
+	"crypto/rsa"
+	"crypto/sha256"
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"os"
 
 	"github.com/andlabs/ui"
 	_ "github.com/andlabs/ui/winmanifest"
@@ -27,6 +31,7 @@ func sendMessage(message string) string {
 			fmt.Println(err) // обработка ошибок - по умолчанию всегда
 			return ""
 		}
+
 		bodyString := string(bodyBytes) //преобразуем байты в строку
 		return bodyString               //возвражаем строку
 	}
@@ -34,6 +39,49 @@ func sendMessage(message string) string {
 }
 
 var mainwin *ui.Window
+
+func Encrypt(bodyString string) string {
+
+	// Generate RSA Key
+
+	raulPrivateKey, err := rsa.GenerateKey(rand.Reader, 2048)
+
+	if err != nil {
+		fmt.Println(err.Error)
+		os.Exit(1)
+	}
+
+	raulPublicKey := &raulPrivateKey.PublicKey
+
+	label := []byte("")
+	hash := sha256.New()
+	ciphertext, err := rsa.EncryptOAEP(hash, rand.Reader, raulPublicKey, []byte(bodyString), label)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+	return string(ciphertext[:])
+}
+
+func Decrypt(ciphertext string) string {
+
+	raulPrivateKey, err := rsa.GenerateKey(rand.Reader, 2048)
+
+	if err != nil {
+		fmt.Println(err.Error)
+		os.Exit(1)
+	}
+	label := []byte("")
+	hash := sha256.New()
+	// Decrypt Message
+	plainText, err := rsa.DecryptOAEP(hash, rand.Reader, raulPrivateKey, []byte(ciphertext), label)
+
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+	return string(plainText[:])
+}
 
 func Client() ui.Control {
 	hbox := ui.NewHorizontalBox()
@@ -68,12 +116,13 @@ func Client() ui.Control {
 	entry := ui.NewEntry()
 	entry.SetReadOnly(true)
 	button.OnClicked(func(*ui.Button) {
-		ui.MsgBox(mainwin, "Client_Server", sendMessage(textBox.Text())) // вызываем в МВ функцию с принятым сообщением
+		ui.MsgBox(mainwin, "Client_Server", Encrypt(textBox.Text())) // вызываем в МВ функцию с принятым сообщением
 	})
 
 	grid.Append(button,
 		0, 0, 1, 1,
 		false, ui.AlignFill, false, ui.AlignFill)
+
 	msggrid := ui.NewGrid()
 	msggrid.SetPadded(true)
 	grid.Append(msggrid,
