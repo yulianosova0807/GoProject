@@ -125,6 +125,16 @@ func Client() ui.Control {
 		1, 0, 1, 1,
 		false, ui.AlignFill, false, ui.AlignFill)
 
+	button2 := ui.NewButton("Encrypt")
+	entry2 := ui.NewEntry()
+	entry2.SetReadOnly(true)
+	button2.OnClicked(func(*ui.Button) {
+		ui.MsgBox(mainwin, "Client_Server", Decrypt(textBox.Text())) // вызываем в МВ функцию с принятым сообщением
+	})
+
+	grid.Append(button2,
+		2, 0, 1, 1,
+		false, ui.AlignFill, false, ui.AlignFill)
 	msggrid := ui.NewGrid()
 	msggrid.SetPadded(true)
 	grid.Append(msggrid,
