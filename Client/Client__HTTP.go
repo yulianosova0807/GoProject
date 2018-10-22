@@ -21,7 +21,7 @@ func sendMessage(message string) string {
 		return ""
 	}
 	defer resp.Body.Close()
-	if resp.StatusCode == http.StatusOK { // статусОк - для проверки, сработал ли GET()
+	if resp.StatusCode == http.StatusOK { // статус Ок - для проверки, сработал ли GET()
 		bodyBytes, err2 := ioutil.ReadAll(resp.Body) //считываем пришедшие данные ( в данном случае, это будет сообщение в окне)
 		if err2 != nil {
 			fmt.Println(err) // обработка ошибок - по умолчанию всегда
@@ -70,10 +70,10 @@ func Client() ui.Control {
 	button.OnClicked(func(*ui.Button) {
 		ui.MsgBox(mainwin, "Client_Server", sendMessage(textBox.Text())) // вызываем в МВ функцию с принятым сообщением
 	})
+
 	grid.Append(button,
 		0, 0, 1, 1,
 		false, ui.AlignFill, false, ui.AlignFill)
-
 	msggrid := ui.NewGrid()
 	msggrid.SetPadded(true)
 	grid.Append(msggrid,

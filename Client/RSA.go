@@ -22,7 +22,6 @@ func main() {
 
 	raulPublicKey := &raulPrivateKey.PublicKey
 
-
 	fmt.Println("Private Key : ", raulPrivateKey)
 	fmt.Println("Public key ", raulPublicKey)
 
