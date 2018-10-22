@@ -41,18 +41,13 @@ func sendMessage(message string) string {
 var mainwin *ui.Window
 
 func Encrypt(bodyString string) string {
-
 	// Generate RSA Key
-
 	raulPrivateKey, err := rsa.GenerateKey(rand.Reader, 2048)
-
 	if err != nil {
 		fmt.Println(err.Error)
 		os.Exit(1)
 	}
-
 	raulPublicKey := &raulPrivateKey.PublicKey
-
 	label := []byte("")
 	hash := sha256.New()
 	ciphertext, err := rsa.EncryptOAEP(hash, rand.Reader, raulPublicKey, []byte(bodyString), label)
@@ -62,11 +57,8 @@ func Encrypt(bodyString string) string {
 	}
 	return string(ciphertext[:])
 }
-
 func Decrypt(ciphertext string) string {
-
 	raulPrivateKey, err := rsa.GenerateKey(rand.Reader, 2048)
-
 	if err != nil {
 		fmt.Println(err.Error)
 		os.Exit(1)
@@ -75,7 +67,6 @@ func Decrypt(ciphertext string) string {
 	hash := sha256.New()
 	// Decrypt Message
 	plainText, err := rsa.DecryptOAEP(hash, rand.Reader, raulPrivateKey, []byte(ciphertext), label)
-
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
@@ -116,11 +107,22 @@ func Client() ui.Control {
 	entry := ui.NewEntry()
 	entry.SetReadOnly(true)
 	button.OnClicked(func(*ui.Button) {
-		ui.MsgBox(mainwin, "Client_Server", Encrypt(textBox.Text())) // вызываем в МВ функцию с принятым сообщением
+		ui.MsgBox(mainwin, "Client_Server", sendMessage(textBox.Text())) // вызываем в МВ функцию с принятым сообщением
 	})
 
 	grid.Append(button,
 		0, 0, 1, 1,
+		false, ui.AlignFill, false, ui.AlignFill)
+
+	button1 := ui.NewButton("Encrypt")
+	entry1 := ui.NewEntry()
+	entry1.SetReadOnly(true)
+	button1.OnClicked(func(*ui.Button) {
+		ui.MsgBox(mainwin, "Client_Server", Encrypt(textBox.Text())) // вызываем в МВ функцию с принятым сообщением
+	})
+
+	grid.Append(button1,
+		1, 0, 1, 1,
 		false, ui.AlignFill, false, ui.AlignFill)
 
 	msggrid := ui.NewGrid()
